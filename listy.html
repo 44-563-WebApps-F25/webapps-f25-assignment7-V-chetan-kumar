@@ -20,6 +20,7 @@
     <input id="txt" type="text" placeholder="Type something..." />
     <button onclick="addFront()">Add One</button>
     <button onclick="removeMiddle()">Remove Middle</button>
+    <button onclick="duplicateRandomToFront()">Bonus: Duplicate Random → Front</button>
   </div>
 
   <div id="bag" class="flex-container">
@@ -60,6 +61,15 @@
       if (items.length === 0) return;
       const mid = Math.floor((items.length - 1) / 2);
       items[mid].remove();
+    }
+
+    function duplicateRandomToFront() {
+      const bag = document.getElementById("bag");
+      const items = document.getElementsByClassName("listy");
+      if (items.length === 0) return;
+      const idx = Math.floor(Math.random() * items.length);
+      const clone = items[idx].cloneNode(true);
+      bag.insertBefore(clone, bag.firstChild);
     }
   </script>
 </body>

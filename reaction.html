@@ -36,7 +36,7 @@
       document.getElementById("countdown").innerHTML = "Count";
 
       startedAt = Date.now();
-      const secs = 3;
+    const secs = Math.floor(Math.random() * 9) + 2;
       zeroTime = startedAt + secs * 1000;
 
       for (let i = 0; i <= secs; i++) {

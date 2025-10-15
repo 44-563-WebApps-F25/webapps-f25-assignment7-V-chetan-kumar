@@ -63,23 +63,33 @@
     const ids = Array.from({length: 25}, (_, i) => `cell${i}`);
     let clickCount = 0;
     let score = 0;
+   
+    function randCell() { return Math.floor(Math.random() * 25); }
+    function randCellNotEqual(n) { let r; do { r = randCell(); } while (r === n); return r; }
 
-    let treasureLocation = 18;
+    let treasureLocation = randCell();
+    let snakePos = randCellNotEqual(treasureLocation);
 
     function updateHud(distText) {
       document.getElementById("clicks").innerText = `Number of clicks: ${clickCount}`;
-      document.getElementById("distance").innerText = `Distance: ${distText}`;
-      document.getElementById("score").innerText = `Score: ${score}`;
-    }
-
-    function distance(a, b) {
-      const r1 = Math.floor(a / 5), c1 = a % 5;
-      const r2 = Math.floor(b / 5), c2 = b % 5;
-      return Math.abs(r1 - r2) + Math.abs(c1 - c2);
     }
 
     function nonTreasureFlip(imgEl) {
-      imgEl.src = (Math.random() < 0.5) ? catImg : cat2Img;  
+      imgEl.src = (Math.random() < 0.5) ? snakeImg : rabbitImg;
+    }
+
+    function gameOver(msg) {
+      document.getElementById("distance").innerText = msg;
+      document.getElementById("instructions").innerText = "Click New Game to restart";
+    }
+
+    function moveSnake() {
+      const r = Math.floor(snakePos / 5), c = snakePos % 5;
+      const dirs = [[-1,0],[1,0],[0,1],[0,-1]];
+      const [dr, dc] = dirs[Math.floor(Math.random()*4)];
+      const nr = Math.min(4, Math.max(0, r + dr));
+      const nc = Math.min(4, Math.max(0, c + dc));
+      snakePos = nr*5 + nc;
     }
 
     function makeGuess(position) {
@@ -90,11 +100,16 @@
 
       clickCount++;
 
+      if (position === snakePos) {
+        gameOver("Game over: Snake got you!");
+        return;
+      }
+
       if (position === treasureLocation) {
-        imgEl.src = goldImg; 
+        imgEl.src = goldImg;
         score += 10;
       } else {
-        nonTreasureFlip(imgEl); 
+        nonTreasureFlip(imgEl);
         score -= 1;
       }
       imgEl.dataset.revealed = "1";
@@ -102,11 +117,16 @@
       const d = distance(position, treasureLocation);
       updateHud(d);
 
-      check(); 
+      moveSnake();
+
+
+      if (position === snakePos) {
+        gameOver("Game over: Snake got you!");
+        return;
+      }
     }
 
-    function check() {
-    }
+    function check() {}
 
     function help() {
       const r = Math.floor(treasureLocation / 5), c = treasureLocation % 5;
@@ -114,7 +134,24 @@
       document.getElementById("distance").innerText = `Distance: unknown | Hint: ${hint}`;
     }
 
+    function newGame() {
+      clickCount = 0;
+      score = 0;
+      treasureLocation = randCell();
+      snakePos = randCellNotEqual(treasureLocation);
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        el.src = startImg;
+        el.dataset.revealed = "0";
+      });
+      document.getElementById("instructions").innerText = "Click on the squares to find the treasure";
+      updateHud("unknown");
+    }
+
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      el.onerror = () => { el.src = startImg; };
+    });
     updateHud("unknown");
   </script>
 </body>
-</html>
