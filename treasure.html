@@ -1,83 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Bootstrap Starter</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" 
-    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" 
-    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" 
-    integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>  
-
-  </head>
-<style>
-    body {
-      padding: 20px;
-    }
-
-    h1 {
-      margin-bottom: 20px;
-    }
-
-    .status {
-      font-size: 1.1rem;
-      margin-bottom: 10px;
-    }
-
-    .game-container {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .row-container {
-      display: flex;
-      gap: 10px;
-    }
-
-    .location {
-      width: 80px;
-      height: 80px;
-      cursor: pointer;
-    }
+  <meta charset="UTF-8" />
+  <title>Find the Treasure — CHETAN KUMAR</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 24px; }
+    #field { display: grid; grid-template-columns: repeat(5, 64px); gap: 8px; margin-top: 12px; }
+    #field img { width: 64px; height: 64px; cursor: pointer; user-select: none; }
+    #hud { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+    #helpBox { padding: .4rem .6rem; border: 1px dashed #888; display: inline-block; cursor: pointer; border-radius: 6px; }
   </style>
 </head>
-<body class="container">
+<body>
+  <h1>Find the Treasure — chetan KUMAR</h1>
 
-  <h1>Chetan Treasure Hunt</h1>
+  <p id="instructions">Click the squares to find treasure</p>
+  <div id="hud">
+    <p id="clicks">No of clicks: 0</p>
+    <p id="distance">Distance: unknown</p>
+    <p id="score">Score: 0</p>
+    <div id="helpBox" onclick="help()">Need help? (click here)</div>
+  </div>
+  
+  <div id="field">
+    <img id="cell0"  src="cactus.jpg" alt="" onclick="makeGuess(0)">
+    <img id="cell1"  src="cactus.jpg" alt="" onclick="makeGuess(1)">
+    <img id="cell2"  src="cactus.jpg" alt="" onclick="makeGuess(2)">
+    <img id="cell3"  src="cactus.jpg" alt="" onclick="makeGuess(3)">
+    <img id="cell4"  src="cactus.jpg" alt="" onclick="makeGuess(4)">
 
-  <div class="status">Click on the locations to find silver and gold, watch out for the rattlesnake</div>
-  <div id="locations" class="status">Number of locations checked is zero.</div>
-  <div id="score" class="status">Score is zero.</div>
-  <div class="status">Click for help.</div>
-  <div id="help" class="status">Help report</div>
+    <img id="cell5"  src="cactus.jpg" alt="" onclick="makeGuess(5)">
+    <img id="cell6"  src="cactus.jpg" alt="" onclick="makeGuess(6)">
+    <img id="cell7"  src="cactus.jpg" alt="" onclick="makeGuess(7)">
+    <img id="cell8"  src="cactus.jpg" alt="" onclick="makeGuess(8)">
+    <img id="cell9"  src="cactus.jpg" alt="" onclick="makeGuess(9)">
 
-  <div id="game" class="game-container mt-4"></div>
+    <img id="cell10" src="cactus.jpg" alt="" onclick="makeGuess(10)">
+    <img id="cell11" src="cactus.jpg" alt="" onclick="makeGuess(11)">
+    <img id="cell12" src="cactus.jpg" alt="" onclick="makeGuess(12)">
+    <img id="cell13" src="cactus.jpg" alt="" onclick="makeGuess(13)">
+    <img id="cell14" src="cactus.jpg" alt="" onclick="makeGuess(14)">
+
+    <img id="cell15" src="cactus.jpg" alt="" onclick="makeGuess(15)">
+    <img id="cell16" src="cactus.jpg" alt="" onclick="makeGuess(16)">
+    <img id="cell17" src="cactus.jpg" alt="" onclick="makeGuess(17)">
+    <img id="cell18" src="cactus.jpg" alt="" onclick="makeGuess(18)">
+    <img id="cell19" src="cactus.jpg" alt="" onclick="makeGuess(19)">
+
+    <img id="cell20" src="cactus.jpg" alt="" onclick="makeGuess(20)">
+    <img id="cell21" src="cactus.jpg" alt="" onclick="makeGuess(21)">
+    <img id="cell22" src="cactus.jpg" alt="" onclick="makeGuess(22)">
+    <img id="cell23" src="cactus.jpg" alt="" onclick="makeGuess(23)">
+    <img id="cell24" src="cactus.jpg" alt="" onclick="makeGuess(24)">
+  </div>
 
   <script>
-    const rows = 5;
-    const cols = 7;
-    const gameContainer = document.getElementById("game");
+  const startImg = "cactus.jpg";
+    const goldImg  = "gold.jpg";
+    const catImg = "cat.jpg";
+    const cat2Img= "images/cat.jpg";
 
-    for (let r = 0; r < rows; r++) {
-      const rowDiv = document.createElement("div");
-      rowDiv.classList.add("row-container");
+    const ids = Array.from({length: 25}, (_, i) => `cell${i}`);
+    let clickCount = 0;
+    let score = 0;
 
-      for (let c = 0; c < cols; c++) {
-        const img = document.createElement("img");
-        img.src = "cactus-2.jpg";
-        img.alt = "Cactus";
-        img.classList.add("location");
+    let treasureLocation = 18;
 
-        rowDiv.appendChild(img);
-      }
-
-      gameContainer.appendChild(rowDiv);
+    function updateHud(distText) {
+      document.getElementById("clicks").innerText = `Number of clicks: ${clickCount}`;
+      document.getElementById("distance").innerText = `Distance: ${distText}`;
+      document.getElementById("score").innerText = `Score: ${score}`;
     }
-  </script>
 
+    function distance(a, b) {
+      const r1 = Math.floor(a / 5), c1 = a % 5;
+      const r2 = Math.floor(b / 5), c2 = b % 5;
+      return Math.abs(r1 - r2) + Math.abs(c1 - c2);
+    }
+
+    function nonTreasureFlip(imgEl) {
+      imgEl.src = (Math.random() < 0.5) ? catImg : cat2Img;  
+    }
+
+    function makeGuess(position) {
+      const imgId = ids[position];
+      const imgEl = document.getElementById(imgId);
+
+      if (imgEl.dataset.revealed === "1") return;
+
+      clickCount++;
+
+      if (position === treasureLocation) {
+        imgEl.src = goldImg; 
+        score += 10;
+      } else {
+        nonTreasureFlip(imgEl); 
+        score -= 1;
+      }
+      imgEl.dataset.revealed = "1";
+
+      const d = distance(position, treasureLocation);
+      updateHud(d);
+
+      check(); 
+    }
+
+    function check() {
+    }
+
+    function help() {
+      const r = Math.floor(treasureLocation / 5), c = treasureLocation % 5;
+      const hint = `Row ${r}, Col ${c}`;
+      document.getElementById("distance").innerText = `Distance: unknown | Hint: ${hint}`;
+    }
+
+    updateHud("unknown");
+  </script>
 </body>
 </html>
