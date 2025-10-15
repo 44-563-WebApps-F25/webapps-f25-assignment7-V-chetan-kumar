@@ -1,0 +1,66 @@
+
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chetan Kumar— Listy</title>
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 24px; }
+    .toolbar { display:flex; gap:8px; margin-bottom:12px; }
+    .flex-container { display:flex; gap:8px; flex-wrap:wrap; }
+    .listy { padding:.4rem .8rem; border:1px solid #ccc; border-radius:8px; }
+    input[type="text"] { padding:.4rem .6rem; }
+    button { padding:.45rem .8rem; }
+  </style>
+</head>
+<body>
+  <h1>CHetan Kumar— List builder</h1>
+
+  <div class="toolbar">
+    <input id="txt" type="text" placeholder="Type something..." />
+    <button onclick="addFront()">Add One</button>
+    <button onclick="removeMiddle()">Remove Middle</button>
+  </div>
+
+  <div id="bag" class="flex-container">
+    <div class="listy">alpha</div>
+    <div class="listy">beta</div>
+  </div>
+
+  <script>
+    function addFront() {
+      const value = document.getElementById("txt").value.trim();
+      if (!value) return;
+
+      const bag = document.getElementById("bag");
+      const el = document.createElement("div");
+      el.className = "listy";
+      el.innerHTML = value;
+
+      const listyItems = document.getElementsByClassName("listy");
+
+      for (const item of Array.from(listyItems)) {
+        if (item.innerHTML === value) {
+          item.remove();
+          break;
+        }
+      }
+
+      if (listyItems.length > 9) {
+        listyItems[0].remove();
+      }
+
+      bag.insertBefore(el, bag.firstChild);
+      document.getElementById("txt").value = "";
+      document.getElementById("txt").focus();
+    }
+
+    function removeMiddle() {
+      const items = document.getElementsByClassName("listy");
+      if (items.length === 0) return;
+      const mid = Math.floor((items.length - 1) / 2);
+      items[mid].remove();
+    }
+  </script>
+</body>
+</html>
